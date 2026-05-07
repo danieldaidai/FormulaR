@@ -66,7 +66,7 @@ export class FormulaRSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Model')
-			.setDesc('Model name for the configured endpoint, e.g. claude-3-5-haiku-20241022 or gpt-4o')
+			.setDesc('Model name for the configured endpoint')
 			.addText(text => text
 				.setValue(this.plugin.settings.model)
 				.onChange(async (value) => {
