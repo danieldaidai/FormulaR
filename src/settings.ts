@@ -36,13 +36,12 @@ export class FormulaRSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
-		containerEl.createEl('h2', { text: 'FormulaR 设置' });
 
-		containerEl.createEl('h3', { text: 'AI 接口配置' });
+		new Setting(containerEl).setName('API configuration').setHeading();
 
 		new Setting(containerEl)
-			.setName('API 地址')
-			.setDesc('支持 Claude（api.anthropic.com）或任意 OpenAI 兼容接口（如 Ollama、OpenAI、本地模型）')
+			.setName('API base URL')
+			.setDesc('Supports Claude (api.anthropic.com) or any OpenAI-compatible endpoint (Ollama, OpenAI, local models, etc.)')
 			.addText(text => text
 				.setPlaceholder('https://api.anthropic.com')
 				.setValue(this.plugin.settings.apiBaseUrl)
@@ -52,10 +51,10 @@ export class FormulaRSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('API Key')
-			.setDesc('填写对应服务的 API Key；本地服务（如 Ollama）可留空')
+			.setName('API key')
+			.setDesc('API key for the configured endpoint; leave empty for local services such as Ollama')
 			.addText(text => {
-				text.setPlaceholder('sk-ant-... 或 sk-...')
+				text.setPlaceholder('sk-ant-... or sk-...')
 					.setValue(this.plugin.settings.apiKey)
 					.onChange(async (value) => {
 						this.plugin.settings.apiKey = value;
@@ -66,8 +65,8 @@ export class FormulaRSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('模型名称')
-			.setDesc('填写模型 ID，如 claude-3-5-haiku-20241022、gpt-4o、llama3、qwen2.5 等')
+			.setName('Model')
+			.setDesc('Model ID, e.g. claude-3-5-haiku-20241022, gpt-4o, llama3, qwen2.5')
 			.addText(text => text
 				.setPlaceholder('claude-3-5-haiku-20241022')
 				.setValue(this.plugin.settings.model)
@@ -76,11 +75,11 @@ export class FormulaRSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}));
 
-		containerEl.createEl('h3', { text: '验证行为' });
+		new Setting(containerEl).setName('Validation').setHeading();
 
 		new Setting(containerEl)
-			.setName('验证延迟（毫秒）')
-			.setDesc('停止输入后多久触发验证')
+			.setName('Validation delay (ms)')
+			.setDesc('How long to wait after you stop typing before triggering validation')
 			.addSlider(slider => slider
 				.setLimits(500, 3000, 500)
 				.setValue(this.plugin.settings.debounceMs)
@@ -91,8 +90,8 @@ export class FormulaRSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('启用本地验证')
-			.setDesc('使用 mathjs 进行代数等价性验证（离线可用）')
+			.setName('Enable local validation')
+			.setDesc('Use mathjs for algebraic equivalence checking (works offline)')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableLocalValidation)
 				.onChange(async (value) => {
@@ -101,8 +100,8 @@ export class FormulaRSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('启用 AI 验证')
-			.setDesc('本地无法判断时调用 AI 接口（需要填写 API 地址和 Key）')
+			.setName('Enable AI validation')
+			.setDesc('Call the AI when local validation is inconclusive (requires API base URL and key)')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableClaudeValidation)
 				.onChange(async (value) => {
@@ -111,8 +110,8 @@ export class FormulaRSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName('启用自动补全')
-			.setDesc('在推导块末尾输入 \\\\ 时提供下一步建议（需要 AI 接口）')
+			.setName('Enable autocomplete')
+			.setDesc('Suggest next derivation steps when you type \\\\ at the end of an align block (requires AI)')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableAutoComplete)
 				.onChange(async (value) => {

@@ -24,28 +24,29 @@ export function buildValidationViewPlugin(
 			if (this.debounceTimer) clearTimeout(this.debounceTimer);
 
 			const settings = getSettings();
-			this.debounceTimer = setTimeout(async () => {
-				const version = ++this.currentVersion;
-				try {
-					const blocks = detectAlignBlocks(update.state);
-					if (blocks.length === 0) return;
+			this.debounceTimer = setTimeout(() => {
+				void (async () => {
+					const version = ++this.currentVersion;
+					try {
+						const blocks = detectAlignBlocks(update.state);
+						if (blocks.length === 0) return;
 
-					// Clear stale results immediately
-					this.view.dispatch({
-						effects: blocks.map(b =>
-							clearValidationResults.of({ blockFromPos: b.fromPos })
-						),
-					});
+						this.view.dispatch({
+							effects: blocks.map(b =>
+								clearValidationResults.of({ blockFromPos: b.fromPos })
+							),
+						});
 
-					const results = await this.orchestrator.validateBlocks(blocks);
-					if (version !== this.currentVersion) return;
+						const results = await this.orchestrator.validateBlocks(blocks);
+						if (version !== this.currentVersion) return;
 
-					this.view.dispatch({
-						effects: results.map(r => setValidationResults.of(r)),
-					});
-				} catch (e) {
-					console.error('[FormulaR] Validation error:', e);
-				}
+						this.view.dispatch({
+							effects: results.map(r => setValidationResults.of(r)),
+						});
+					} catch (e) {
+						console.error('[FormulaR] Validation error:', e);
+					}
+				})();
 			}, settings.debounceMs);
 		}
 

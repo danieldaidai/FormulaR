@@ -18,16 +18,17 @@ export const formulaHoverTooltip = hoverTooltip((view, pos) => {
 
 	if (!found) return null;
 
+	const result = found;
 	return {
-		pos: found.fromPos,
-		end: found.toPos,
+		pos: result.fromPos,
+		end: result.toPos,
 		above: true,
 		create() {
 			const dom = document.createElement('div');
-			dom.className = found!.status === 'uncertain'
+			dom.className = result.status === 'uncertain'
 			? 'formular-uncertain-tooltip'
 			: 'formular-error-tooltip';
-			dom.textContent = found!.message;
+			dom.textContent = result.message;
 			return { dom };
 		},
 	};

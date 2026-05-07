@@ -106,7 +106,7 @@ function parseScript(s: string): [string, number] {
 		return [s.slice(1), s.length];
 	}
 	const m = /^([^\s^_\\{]+)/.exec(s);
-	const tok = m ? m[0]! : '';
+	const tok = m ? m[0] : '';
 	return [tok, tok.length];
 }
 
@@ -155,7 +155,7 @@ export function latexToExpr(latex: string): string {
 	expr = replaceFrac(expr);
 	expr = replaceSqrt(expr);
 	expr = replacePower(expr);
-	expr = expr.replace(/\_\{([^}]*)\}/g, '_$1');
+	expr = expr.replace(/_\{([^}]*)\}/g, '_$1');
 	expr = expr.replace(/\{/g, '(').replace(/\}/g, ')');
 	return expr.trim();
 }

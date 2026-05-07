@@ -1,3 +1,4 @@
+import { requestUrl } from 'obsidian';
 import { AlignStep, NextStepSuggestion, StepValidationResult } from './types';
 
 interface ChatMessage {
@@ -35,7 +36,8 @@ export class ClaudeClient {
 	// ---- Low-level HTTP helpers ----
 
 	private async callAnthropic(system: string, messages: ChatMessage[], maxTokens: number): Promise<string> {
-		const res = await fetch(`${this.baseUrl}/v1/messages`, {
+		const res = await requestUrl({
+			url: `${this.baseUrl}/v1/messages`,
 			method: 'POST',
 			headers: {
 				'x-api-key': this.apiKey,
@@ -43,9 +45,10 @@ export class ClaudeClient {
 				'content-type': 'application/json',
 			},
 			body: JSON.stringify({ model: this.model, max_tokens: maxTokens, system, messages }),
+			throw: false,
 		});
-		if (!res.ok) throw new Error(`Anthropic API ${res.status}: ${res.statusText}`);
-		const data = await res.json() as ClaudeResponse;
+		if (res.status < 200 || res.status >= 300) throw new Error(`Anthropic API ${res.status}`);
+		const data = res.json as ClaudeResponse;
 		const first = data.content[0];
 		if (!first || first.type !== 'text') throw new Error('Unexpected Anthropic response format');
 		return first.text;
@@ -56,16 +59,17 @@ export class ClaudeClient {
 			{ role: 'system' as const, content: system },
 			...messages,
 		];
-		const res = await fetch(`${this.baseUrl}/v1/chat/completions`, {
+		const headers: Record<string, string> = { 'content-type': 'application/json' };
+		if (this.apiKey) headers['Authorization'] = `Bearer ${this.apiKey}`;
+		const res = await requestUrl({
+			url: `${this.baseUrl}/v1/chat/completions`,
 			method: 'POST',
-			headers: {
-				...(this.apiKey ? { 'Authorization': `Bearer ${this.apiKey}` } : {}),
-				'content-type': 'application/json',
-			},
+			headers,
 			body: JSON.stringify({ model: this.model, max_tokens: maxTokens, messages: allMessages }),
+			throw: false,
 		});
-		if (!res.ok) throw new Error(`API ${res.status}: ${res.statusText}`);
-		const data = await res.json() as OpenAIResponse;
+		if (res.status < 200 || res.status >= 300) throw new Error(`API ${res.status}`);
+		const data = res.json as OpenAIResponse;
 		const choice = data.choices[0];
 		if (!choice) throw new Error('Empty response from API');
 		return choice.message.content;
