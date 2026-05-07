@@ -41,7 +41,7 @@ export class FormulaRSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('API base URL')
-			.setDesc('Supports Claude (api.anthropic.com) or any OpenAI-compatible endpoint (Ollama, OpenAI, local models, etc.)')
+			.setDesc('Base URL of the AI API to call; defaults to https://api.anthropic.com')
 			.addText(text => text
 				.setPlaceholder('https://api.anthropic.com')
 				.setValue(this.plugin.settings.apiBaseUrl)
@@ -52,9 +52,9 @@ export class FormulaRSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('API key')
-			.setDesc('API key for the configured endpoint; leave empty for local services such as Ollama')
+			.setDesc('API key for the endpoint above; leave empty if no authentication is required')
 			.addText(text => {
-				text.setPlaceholder('sk-ant-... or sk-...')
+				text.setPlaceholder('Your API key')
 					.setValue(this.plugin.settings.apiKey)
 					.onChange(async (value) => {
 						this.plugin.settings.apiKey = value;
@@ -66,9 +66,8 @@ export class FormulaRSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Model')
-			.setDesc('Model ID, e.g. claude-3-5-haiku-20241022, gpt-4o, llama3, qwen2.5')
+			.setDesc('The AI model to call, e.g. claude-3-5-haiku-20241022 or gpt-4o')
 			.addText(text => text
-				.setPlaceholder('claude-3-5-haiku-20241022')
 				.setValue(this.plugin.settings.model)
 				.onChange(async (value) => {
 					this.plugin.settings.model = value.trim();
