@@ -70,4 +70,4 @@ When AI validation or autocomplete is enabled, the content of the `align` block 
 
 ## License
 
-[0-BSD](LICENSE)
+[MIT](LICENSE)
