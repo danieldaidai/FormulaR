@@ -1,7 +1,7 @@
 {
-	"id": "FormulaR",
+	"id": "formula-r",
 	"name": "FormulaR",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "0.15.0",
 	"description": "Automatic Verification and Completion of LaTeX Mathematical Derivations: Detecting Errors in {align} Blocks and Suggesting Next Steps",
 	"author": "danieldaidai",
